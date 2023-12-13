@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{/fragments/header}"></head>
+
+
+<body>
+    <!-- Topbar Start -->
+    <div th:replace="~{/fragments/topbar}"></div>
+
+    <div th:replace="~{/fragments/navbar}"></div>
+
+
+    <!-- Page Header Start -->
+    <div class="container-fluid bg-secondary mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">Shopping Cart</h1>
+            <div class="d-inline-flex">
+                <p class="m-0"><a href="">Home</a></p>
+                <p class="m-0 px-2">-</p>
+                <p class="m-0">Shopping Cart</p>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Cart Start -->
+    <div class="container-fluid pt-5" id="cartItems">
+
+    </div>
+    <!-- Cart End -->
+
+
+    <!-- Footer Start -->
+    <div th:replace="~{/fragments/footer}"></div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="/mail/jqBootstrapValidation.min.js"></script>
+    <script src="/mail/contact.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/js/main.js"></script>
+  <script>
+      $.ajax({
+          url: '/cart/update?id=0&quantity=0',
+          type: "GET",
+          contentType: 'application/json',
+          success: function (data) {
+              $("#cartItems").html(data)
+          },
+          error: function (data) {
+              console.log(data)
+          }
+      });
+
+  </script>
+
+</body>
+
+</html>

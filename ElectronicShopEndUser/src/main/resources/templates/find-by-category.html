@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="~{/fragments/header}"><title></title></head>
+<body>
+<div th:replace="~{/fragments/topbar}"></div>
+
+<div th:replace="~{/fragments/navbar}"></div>
+<div class="container-fluid pt-5">
+    <div class="text-center mb-4">
+        <h2 class="section-title px-5"><span id="category" th:data="${category.id}" class="px-2">[[${category.name}]]</span></h2>
+    </div>
+    <!-- Shop Start -->
+    <div class="row px-xl-5">
+        <!-- Shop Sidebar Start -->
+        <div class="col-lg-3 col-md-12">
+            <!-- Color Start -->
+            <div class="border-bottom mb-4 pb-4">
+                <h5 class="font-weight-semi-bold mb-4">Filter by color</h5>
+                <th:block  th:each="color : ${T(echo.tdtu.internal.Model.Enum.SysEnum.Color).values()}">
+                    <div class="custom-control custom-checkbox d-flex filterDto align-items-center justify-content-between">
+                        <input type="checkbox" class="custom-control-input" name="color[]" th:value="${color.ordinal()}" th:id="${color} + 'color'">
+                        <label class="custom-control-label" th:for="${color} + 'color'">[[${color.getAbbreviation()}]]</label>
+                    </div>
+                </th:block>
+            </div>
+            <!-- Color End -->
+            <div class="mb-5">
+                <h5 class="font-weight-semi-bold mb-4">Filter by rom</h5>
+                <form>
+                    <th:block  th:each="rom : ${T(echo.tdtu.internal.Model.Enum.SysEnum.Rom).values()}">
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input filterDto" name = "rom[]" th:value="${rom.ordinal}" th:id="${rom}+'rom'">
+                            <label class="custom-control-label" th:for="${rom}+'rom'">[[${rom.getAbbreviation()}]]</label>
+                        </div>
+                    </th:block>
+                </form>
+            </div>
+            <!-- Size Start -->
+            <div class="mb-5">
+                <h5 class="font-weight-semi-bold mb-4">Filter by ram</h5>
+                <form>
+
+                    <th:block  th:each="ram : ${T(echo.tdtu.internal.Model.Enum.SysEnum.Ram).values()}">
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input filterDto" name = "ram[]" th:value="${ram.ordinal}" th:id="${ram}+'ram'">
+                            <label class="custom-control-label" th:for="${ram}+'ram'">[[${ram.getAbbreviation()}]]</label>
+                        </div>
+                    </th:block>
+                </form>
+            </div>
+            <!-- Size End -->
+        </div>
+        <!-- Shop Sidebar End -->
+
+
+        <!-- Shop Product Start -->
+        <div class="col-lg-9 col-md-12">
+            <div class="row pb-3">
+                <div class="col-12 pb-1">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <form action="">
+                            <div class="input-group">
+                                <input  id ="search" type="text" class="form-control filterDto" placeholder="Search by name">
+                                <div class="input-group-append">
+                                        <span class="input-group-text bg-transparent text-primary">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="dropdown ml-4">
+                            <button class="btn border dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                Sort by
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="triggerId">
+                                <a class="dropdown-item" href="#">Latest</a>
+                                <a class="dropdown-item" href="#">Popularity</a>
+                                <a class="dropdown-item" href="#">Best Rating</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pb-3" id = "getProduct">
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Shop Product End -->
+    </div>
+    <!-- Shop End -->
+</div>
+</body>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="/lib/easing/easing.min.js"></script>
+<script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Contact Javascript File -->
+<script src="/mail/jqBootstrapValidation.min.js"></script>
+<script src="/mail/contact.js"></script>
+
+<!-- Template Javascript -->
+<script src="/js/main.js"></script>
+<script>
+    $.ajax({
+        url: '/shop/filter',
+        type: "POST",
+        contentType: 'application/json',
+        data:JSON.stringify({
+            color:[],
+            ram:[],
+            rom:[],
+            categoryId: $("#category").attr("data"),
+            search:$("#search").val(),
+            pageNum: 1
+        }) ,
+        success: function (data) {
+            $("#getProduct").html(data);
+        },
+        error: function (data) {
+            console.log(data)
+            alert("something went wrong.");
+        }
+    });
+    $(".filterDto").change(function (){
+        const colorFilter = $('input[name="color[]"]:checked').map(function() {
+            return this.value;
+        }).get();
+        const ramFilter = $('input[name="ram[]"]:checked').map(function() {
+            return this.value;
+        }).get();
+        const romFilter = $('input[name="rom[]"]:checked').map(function() {
+            return this.value;
+        }).get();
+        $.ajax({
+            url: '/shop/filter',
+            type: "POST",
+            contentType: 'application/json',
+            data:JSON.stringify({
+                color:colorFilter,
+                ram:ramFilter,
+                rom:romFilter,
+                categoryId: $("#category").attr("data"),
+                search:$("#search").val(),
+                pageNum: 1
+            }) ,
+            success: function (data) {
+                $("#getProduct").html(data);
+            },
+            error: function (data) {
+                console.log(data)
+                alert("something went wrong.");
+            }
+        });
+    })
+
+</script>
+
+</html>
+
+
+

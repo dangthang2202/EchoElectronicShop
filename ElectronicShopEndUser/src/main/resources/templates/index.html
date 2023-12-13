@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{/fragments/header}"></head>
+
+
+<body>
+    <div th:replace="~{/fragments/topbar}"></div>
+
+    <div th:replace="~{/fragments/navbar}"></div>
+
+
+    <!-- Featured Start -->
+    <div class="container-fluid pt-5">
+        <div class="row px-xl-5 pb-3">
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+                    <h1 class="fa fa-check text-primary m-0 mr-3"></h1>
+                    <h5 class="font-weight-semi-bold m-0">Quality Product</h5>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+                    <h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
+                    <h5 class="font-weight-semi-bold m-0">Free Shipping</h5>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+                    <h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
+                    <h5 class="font-weight-semi-bold m-0">14-Day Return</h5>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+                    <h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
+                    <h5 class="font-weight-semi-bold m-0">24/7 Support</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Featured End -->
+
+
+    <!-- Categories Start -->
+    <div class="container-fluid pt-5">
+        <div class="row px-xl-5 pb-3">
+            <th:block th:each="item : ${categories}">
+
+                <div class="col-lg-4 col-md-6 pb-1">
+                    <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
+                        <a th:href="@{'/find-categories/' + ${item.id}}" class="cat-img position-relative overflow-hidden mb-3">
+                            <img class="img-fluid" th:src="${item.image}" alt="">
+                        </a>
+                        <h5 class="font-weight-semi-bold m-0">[[${item.name}]]</h5>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+    <!-- Categories End -->
+
+
+
+    <!-- Products Start -->
+    <div class="container-fluid pt-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">Trandy Products</span></h2>
+        </div>
+        <div class="row px-xl-5 pb-3">
+            <th:block th:each="item,iterStat : ${products}">
+                <th:block th:if="${iterStat.index < 8}">
+                    <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                        <div class="card product-item border-0 mb-4">
+                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                            <img class="img-fluid w-100" th:src="${item.image}" alt="">
+                        </div>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                            <h6 class="text-truncate mb-3">[[${item.product.name}]]</h6>
+                            <div class="d-flex justify-content-center">
+                            <h6>$[[${item.product.price}]]</h6><h6 class="text-muted ml-2"><del>$[[${item.product.price}]]</del></h6>
+                        </div>
+                    </div>
+                            <div class="card-footer d-flex justify-content-between bg-light border">
+                                <a th:href="@{'/shop/detail/' + ${item.id}}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                <a class="btn btn-sm text-dark p-0 addToCart" th:data="${item.id}"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </th:block>
+        </div>
+    </div>
+    <!-- Products End -->
+
+
+
+    <!-- Footer Start -->
+    <div th:replace="~{/fragments/footer}"></div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="/mail/jqBootstrapValidation.min.js"></script>
+    <script src="/mail/contact.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/js/main.js"></script>
+
+    <script>
+        $(".addToCart").click(function (){
+            const productId = $(this).attr("data")
+            $.ajax({
+                url: '/cart/add-to-cart/'+productId,
+                type: "GET",
+                contentType: 'application/json',
+                success: function (data) {
+                    alert("Thêm thành công");
+                    console.log(data)
+                },
+                error: function (data) {
+                    console.log(data)
+                    location.href="/auth/login"
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>
